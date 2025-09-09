@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente - Controles AVL/GPS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <i class="fas fa-hat-wizard"></i>
+                    <i class="fas fa-feather-alt"></i>
+                </div>
+                <div class="header-text">
+                    <h1>Asistente</h1>
+                    <p>Genere sus controles guiado por el asistente de Neo</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Steps -->
+        <nav class="steps-nav">
+            <div class="step active" data-step="1">
+                <div class="step-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="step-content">
+                    <h3>Controles</h3>
+                    <p>Vea y administre sus tareas de control (controles de ruta, zonas, horarios, excesos, etc.)</p>
+                </div>
+            </div>
+
+            <div class="step" data-step="2">
+                <div class="step-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <div class="step-content">
+                    <h3>Destinatarios</h3>
+                    <p>Especifique los contactos que serán notificados por sus controles</p>
+                </div>
+            </div>
+
+            <div class="step" data-step="3">
+                <div class="step-icon">
+                    <i class="fas fa-satellite-dish"></i>
+                </div>
+                <div class="step-content">
+                    <h3>Criterios</h3>
+                    <p>Establezca los criterios, condiciones o situaciones en las cuales sus controles lo notificarán</p>
+                </div>
+            </div>
+
+            <div class="step" data-step="4">
+                <div class="step-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="step-content">
+                    <h3>Informes</h3>
+                    <p>Defina la información contenida en las notificaciones que enviarán sus controles</p>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content">
+            <!-- Step 1: Controles -->
+            <div class="step-content-panel active" id="step-1">
+                <h2>Configuración de Controles</h2>
+                <div class="control-types">
+                    <div class="control-card">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <h3>Control de Velocidad</h3>
+                        <p>Configure límites de velocidad para vehículos</p>
+                        <div class="control-options">
+                            <label>
+                                <input type="checkbox" name="speed-control" value="excess">
+                                Exceso de velocidad
+                            </label>
+                            <label>
+                                <input type="checkbox" name="speed-control" value="minimum">
+                                Velocidad mínima
+                            </label>
+                        </div>
+                        <div class="speed-settings" style="display: none;">
+                            <label>Límite de velocidad (km/h):</label>
+                            <input type="number" name="speed-limit" min="0" max="200">
+                        </div>
+                    </div>
+
+                    <div class="control-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>Control de Zona</h3>
+                        <p>Defina zonas geográficas de control</p>
+                        <div class="control-options">
+                            <label>
+                                <input type="checkbox" name="zone-control" value="entry">
+                                Entrada a zona
+                            </label>
+                            <label>
+                                <input type="checkbox" name="zone-control" value="exit">
+                                Salida de zona
+                            </label>
+                            <label>
+                                <input type="checkbox" name="zone-control" value="stay">
+                                Permanencia en zona
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="control-card">
+                        <i class="fas fa-clock"></i>
+                        <h3>Control de Horarios</h3>
+                        <p>Establezca horarios de circulación permitidos</p>
+                        <div class="control-options">
+                            <label>
+                                <input type="checkbox" name="schedule-control" value="working-hours">
+                                Horario laboral
+                            </label>
+                            <label>
+                                <input type="checkbox" name="schedule-control" value="custom">
+                                Horario personalizado
+                            </label>
+                        </div>
+                        <div class="schedule-settings" style="display: none;">
+                            <label>Hora inicio:</label>
+                            <input type="time" name="start-time">
+                            <label>Hora fin:</label>
+                            <input type="time" name="end-time">
+                        </div>
+                    </div>
+
+                    <div class="control-card">
+                        <i class="fas fa-route"></i>
+                        <h3>Control de Ruta</h3>
+                        <p>Configure rutas específicas de seguimiento</p>
+                        <div class="control-options">
+                            <label>
+                                <input type="checkbox" name="route-control" value="deviation">
+                                Desviación de ruta
+                            </label>
+                            <label>
+                                <input type="checkbox" name="route-control" value="stops">
+                                Paradas no autorizadas
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Destinatarios -->
+            <div class="step-content-panel" id="step-2">
+                <h2>Configuración de Destinatarios</h2>
+                <div class="recipients-section">
+                    <div class="add-recipient">
+                        <h3>Agregar Destinatario</h3>
+                        <form id="recipient-form">
+                            <div class="form-group">
+                                <label>Nombre:</label>
+                                <input type="text" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email:</label>
+                                <input type="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfono:</label>
+                                <input type="tel" name="phone">
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo de notificación:</label>
+                                <select name="notification-type">
+                                    <option value="email">Email</option>
+                                    <option value="sms">SMS</option>
+                                    <option value="both">Email y SMS</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                        </form>
+                    </div>
+
+                    <div class="recipients-list">
+                        <h3>Destinatarios Configurados</h3>
+                        <div id="recipients-container">
+                            <!-- Recipients will be added here dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Criterios -->
+            <div class="step-content-panel" id="step-3">
+                <h2>Configuración de Criterios</h2>
+                <div class="criteria-section">
+                    <div class="criteria-card">
+                        <h3>Condiciones de Activación</h3>
+                        <div class="form-group">
+                            <label>Días de la semana:</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" name="days" value="monday"> Lunes</label>
+                                <label><input type="checkbox" name="days" value="tuesday"> Martes</label>
+                                <label><input type="checkbox" name="days" value="wednesday"> Miércoles</label>
+                                <label><input type="checkbox" name="days" value="thursday"> Jueves</label>
+                                <label><input type="checkbox" name="days" value="friday"> Viernes</label>
+                                <label><input type="checkbox" name="days" value="saturday"> Sábado</label>
+                                <label><input type="checkbox" name="days" value="sunday"> Domingo</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Frecuencia de notificación:</label>
+                            <select name="frequency">
+                                <option value="immediate">Inmediata</option>
+                                <option value="5min">Cada 5 minutos</option>
+                                <option value="15min">Cada 15 minutos</option>
+                                <option value="30min">Cada 30 minutos</option>
+                                <option value="1hour">Cada hora</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Prioridad:</label>
+                            <select name="priority">
+                                <option value="low">Baja</option>
+                                <option value="medium">Media</option>
+                                <option value="high">Alta</option>
+                                <option value="critical">Crítica</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="criteria-card">
+                        <h3>Condiciones Específicas</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="conditions" value="ignition">
+                                Solo cuando el vehículo esté encendido
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="conditions" value="movement">
+                                Solo cuando el vehículo esté en movimiento
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="conditions" value="gps-signal">
+                                Verificar señal GPS válida
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Informes -->
+            <div class="step-content-panel" id="step-4">
+                <h2>Configuración de Informes</h2>
+                <div class="reports-section">
+                    <div class="report-card">
+                        <h3>Información del Vehículo</h3>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="vehicle-info" value="plate" checked> Patente</label>
+                            <label><input type="checkbox" name="vehicle-info" value="driver" checked> Conductor</label>
+                            <label><input type="checkbox" name="vehicle-info" value="model"> Modelo</label>
+                            <label><input type="checkbox" name="vehicle-info" value="company"> Empresa</label>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <h3>Información de Ubicación</h3>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="location-info" value="address" checked> Dirección</label>
+                            <label><input type="checkbox" name="location-info" value="coordinates" checked> Coordenadas</label>
+                            <label><input type="checkbox" name="location-info" value="zone"> Zona</label>
+                            <label><input type="checkbox" name="location-info" value="speed"> Velocidad actual</label>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <h3>Información del Evento</h3>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="event-info" value="timestamp" checked> Fecha y hora</label>
+                            <label><input type="checkbox" name="event-info" value="type"> Tipo de evento</label>
+                            <label><input type="checkbox" name="event-info" value="description"> Descripción</label>
+                            <label><input type="checkbox" name="event-info" value="severity"> Severidad</label>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <h3>Formato de Notificación</h3>
+                        <div class="form-group">
+                            <label>Plantilla de email:</label>
+                            <select name="email-template">
+                                <option value="basic">Básica</option>
+                                <option value="detailed">Detallada</option>
+                                <option value="custom">Personalizada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Incluir mapa:</label>
+                            <input type="checkbox" name="include-map" checked>
+                        </div>
+                        <div class="form-group">
+                            <label>Incluir historial:</label>
+                            <input type="checkbox" name="include-history">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Navigation Buttons -->
+        <div class="navigation">
+            <button id="prev-btn" class="btn btn-secondary" disabled>Anterior</button>
+            <button id="next-btn" class="btn btn-primary">Siguiente</button>
+            <button id="finish-btn" class="btn btn-success" style="display: none;">Finalizar</button>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p><strong>ConSat Argentina S.R.L. | Consultoría de Software de Localización</strong></p>
+                <p>Nazca 1681 - Ciudad Autónoma de Buenos Aires - ARG</p>
+                <p>Tels. (54) 011-4586-0247 | info@consatargentina.com.ar</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
