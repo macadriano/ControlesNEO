@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Provider Platform - Plataforma de Prestadores GPS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="gps-provider-styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-satellite-dish"></i>
+                    <h1>GPS Provider Platform</h1>
+                </div>
+                <p>Sistema de Gestión para Prestadores de Servicios GPS</p>
+            </div>
+            
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="password-input">
+                        <input type="password" id="password" name="password" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember">
+                        <span class="checkmark"></span>
+                        Recordarme
+                    </label>
+                    <a href="#" class="forgot-password">¿Olvidó su contraseña?</a>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Iniciar Sesión
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <p>&copy; 2024 GPS Provider Platform. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-app" class="main-app" style="display: none;">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-satellite-dish"></i>
+                    <span>GPS Provider</span>
+                </div>
+                <button id="sidebar-toggle" class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h3>Dashboard</h3>
+                    <ul>
+                        <li><a href="#" class="nav-item active" data-page="dashboard">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Gestión de Equipos</h3>
+                    <ul>
+                        <li><a href="#" class="nav-item" data-page="equipment">
+                            <i class="fas fa-microchip"></i> Equipos GPS
+                        </a></li>
+                        <li><a href="#" class="nav-item" data-page="stock">
+                            <i class="fas fa-boxes"></i> Control de Stock
+                        </a></li>
+                        <li><a href="#" class="nav-item" data-page="config">
+                            <i class="fas fa-cogs"></i> Configuración
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Clientes y Vehículos</h3>
+                    <ul>
+                        <li><a href="#" class="nav-item" data-page="clients">
+                            <i class="fas fa-users"></i> Clientes
+                        </a></li>
+                        <li><a href="#" class="nav-item" data-page="vehicles">
+                            <i class="fas fa-truck"></i> Vehículos
+                        </a></li>
+                        <li><a href="#" class="nav-item" data-page="sims">
+                            <i class="fas fa-sim-card"></i> SIMs
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Instalaciones</h3>
+                    <ul>
+                        <li><a href="#" class="nav-item" data-page="installations">
+                            <i class="fas fa-tools"></i> Instalaciones
+                        </a></li>
+                        <li><a href="#" class="nav-item" data-page="technicians">
+                            <i class="fas fa-user-tie"></i> Técnicos
+                        </a></li>
+                        <li><a href="#" class="nav-item" data-page="maintenance">
+                            <i class="fas fa-wrench"></i> Mantenimiento
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Monitoreo</h3>
+                    <ul>
+                        <li><a href="#" class="nav-item" data-page="tracking">
+                            <i class="fas fa-map-marked-alt"></i> Seguimiento
+                        </a></li>
+                        <li><a href="#" class="nav-item" data-page="testing">
+                            <i class="fas fa-vial"></i> Pruebas
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Reportes</h3>
+                    <ul>
+                        <li><a href="#" class="nav-item" data-page="reports">
+                            <i class="fas fa-chart-bar"></i> Reportes
+                        </a></li>
+                        <li><a href="#" class="nav-item" data-page="history">
+                            <i class="fas fa-history"></i> Historial
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Configuración</h3>
+                    <ul>
+                        <li><a href="#" class="nav-item" data-page="users">
+                            <i class="fas fa-users-cog"></i> Usuarios
+                        </a></li>
+                        <li><a href="#" class="nav-item" data-page="settings">
+                            <i class="fas fa-cog"></i> Configuración
+                        </a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="top-bar-left">
+                    <button id="mobile-menu-btn" class="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="page-title">Dashboard</h1>
+                </div>
+                
+                <div class="top-bar-right">
+                    <div class="search-box">
+                        <input type="text" placeholder="Buscar equipos, clientes, vehículos...">
+                        <button type="button" onclick="searchItems()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="notifications">
+                        <button class="notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">5</span>
+                        </button>
+                    </div>
+                    
+                    <div class="user-menu">
+                        <div class="user-info">
+                            <span class="user-name">Carlos Mendoza</span>
+                            <span class="user-role">Administrador Técnico</span>
+                        </div>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Dashboard Page -->
+                <div id="dashboard-page" class="page active">
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-microchip"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>1,247</h3>
+                                <p>Equipos GPS</p>
+                                <span class="stat-change positive">+23 este mes</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>89</h3>
+                                <p>Clientes Activos</p>
+                                <span class="stat-change positive">+5 este mes</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>156</h3>
+                                <p>Instalaciones Pendientes</p>
+                                <span class="stat-change negative">+12 esta semana</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>342</h3>
+                                <p>Stock Disponible</p>
+                                <span class="stat-change neutral">-8 esta semana</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="recent-activity">
+                        <div class="section-header">
+                            <h3><i class="fas fa-history"></i> Actividad Reciente</h3>
+                            <a href="#" class="view-all">Ver todo</a>
+                        </div>
+                        
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Instalación completada</h4>
+                                    <p>Equipo GPS-2024-001 instalado en vehículo ABC-123</p>
+                                    <span class="activity-time">Hace 15 min</span>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-vial"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Prueba de equipo</h4>
+                                    <p>GPS-2024-002 pasó todas las pruebas de configuración</p>
+                                    <span class="activity-time">Hace 32 min</span>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Nuevo cliente</h4>
+                                    <p>Transportes del Norte se registró en el sistema</p>
+                                    <span class="activity-time">Hace 1 hora</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equipment Page -->
+                <div id="equipment-page" class="page">
+                    <div class="page-header">
+                        <h2>Gestión de Equipos GPS</h2>
+                        <div class="page-actions">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i> Exportar
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Nuevo Equipo
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="equipment-filters">
+                        <div class="filter-group">
+                            <label>Estado:</label>
+                            <select>
+                                <option value="">Todos los estados</option>
+                                <option value="stock">En Stock</option>
+                                <option value="installed">Instalado</option>
+                                <option value="maintenance">En Mantenimiento</option>
+                                <option value="defective">Defectuoso</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Modelo:</label>
+                            <select>
+                                <option value="">Todos los modelos</option>
+                                <option value="gps-pro">GPS Pro</option>
+                                <option value="gps-basic">GPS Basic</option>
+                                <option value="gps-premium">GPS Premium</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="equipment-grid">
+                        <div class="equipment-card">
+                            <div class="equipment-header">
+                                <h3>GPS-2024-001</h3>
+                                <span class="status-badge installed">Instalado</span>
+                            </div>
+                            <div class="equipment-details">
+                                <p><strong>Modelo:</strong> GPS Pro</p>
+                                <p><strong>IMEI:</strong> 123456789012345</p>
+                                <p><strong>Cliente:</strong> Transportes del Norte</p>
+                                <p><strong>Vehículo:</strong> ABC-123</p>
+                                <p><strong>Instalado:</strong> 15/01/2024</p>
+                            </div>
+                            <div class="equipment-actions">
+                                <button class="btn btn-sm btn-outline">Ver Detalles</button>
+                                <button class="btn btn-sm btn-primary">Configurar</button>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-card">
+                            <div class="equipment-header">
+                                <h3>GPS-2024-002</h3>
+                                <span class="status-badge stock">En Stock</span>
+                            </div>
+                            <div class="equipment-details">
+                                <p><strong>Modelo:</strong> GPS Basic</p>
+                                <p><strong>IMEI:</strong> 123456789012346</p>
+                                <p><strong>Cliente:</strong> -</p>
+                                <p><strong>Vehículo:</strong> -</p>
+                                <p><strong>Recibido:</strong> 20/01/2024</p>
+                            </div>
+                            <div class="equipment-actions">
+                                <button class="btn btn-sm btn-outline">Ver Detalles</button>
+                                <button class="btn btn-sm btn-primary">Probar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tracking Page -->
+                <div id="tracking-page" class="page">
+                    <div class="page-header">
+                        <h2>Seguimiento de Instalaciones</h2>
+                        <div class="map-controls">
+                            <div class="map-type-selector">
+                                <button class="map-type-btn active" data-type="street" onclick="changeMapType('street')">
+                                    <i class="fas fa-map"></i> Calle
+                                </button>
+                                <button class="map-type-btn" data-type="satellite" onclick="changeMapType('satellite')">
+                                    <i class="fas fa-satellite"></i> Satelital
+                                </button>
+                            </div>
+                            <button class="btn btn-primary" onclick="centerMap()">
+                                <i class="fas fa-crosshairs"></i> Centrar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="tracking-content">
+                        <div class="map-container">
+                            <div id="map" class="map"></div>
+                            <div class="map-legend">
+                                <h4>Leyenda</h4>
+                                <div class="legend-item">
+                                    <span class="legend-color installed"></span>
+                                    <span>Instalado</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color pending"></span>
+                                    <span>Pendiente</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color maintenance"></span>
+                                    <span>Mantenimiento</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="installation-list">
+                            <div class="list-header">
+                                <h3>Instalaciones</h3>
+                                <button class="btn btn-sm btn-outline">Filtrar</button>
+                            </div>
+                            
+                            <div class="installation-items">
+                                <div class="installation-item">
+                                    <div class="installation-info">
+                                        <h4>GPS-2024-001</h4>
+                                        <p>Transportes del Norte - ABC-123</p>
+                                        <span class="status-badge installed">Instalado</span>
+                                    </div>
+                                    <div class="installation-actions">
+                                        <button class="btn btn-sm btn-outline">Ver en Mapa</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="installation-item">
+                                    <div class="installation-info">
+                                        <h4>GPS-2024-003</h4>
+                                        <p>Logística Sur - XYZ-789</p>
+                                        <span class="status-badge pending">Pendiente</span>
+                                    </div>
+                                    <div class="installation-actions">
+                                        <button class="btn btn-sm btn-outline">Ver en Mapa</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other pages will be added here -->
+                <div id="stock-page" class="page">
+                    <h2>Control de Stock</h2>
+                    <p>Gestión de inventario de equipos GPS...</p>
+                </div>
+
+                <div id="clients-page" class="page">
+                    <h2>Gestión de Clientes</h2>
+                    <p>Administración de clientes y sus datos...</p>
+                </div>
+
+                <div id="vehicles-page" class="page">
+                    <h2>Gestión de Vehículos</h2>
+                    <p>Administración de vehículos de clientes...</p>
+                </div>
+
+                <div id="sims-page" class="page">
+                    <h2>Gestión de SIMs</h2>
+                    <p>Control de tarjetas SIM y telefonía...</p>
+                </div>
+
+                <div id="installations-page" class="page">
+                    <h2>Gestión de Instalaciones</h2>
+                    <p>Programación y seguimiento de instalaciones...</p>
+                </div>
+
+                <div id="technicians-page" class="page">
+                    <h2>Gestión de Técnicos</h2>
+                    <p>Administración de técnicos instaladores...</p>
+                </div>
+
+                <div id="maintenance-page" class="page">
+                    <h2>Mantenimiento</h2>
+                    <p>Programación y seguimiento de mantenimientos...</p>
+                </div>
+
+                <div id="testing-page" class="page">
+                    <h2>Pruebas de Equipos</h2>
+                    <p>Configuración y pruebas de equipos GPS...</p>
+                </div>
+
+                <div id="reports-page" class="page">
+                    <h2>Reportes</h2>
+                    <p>Reportes de instalaciones, mantenimientos y rendimiento...</p>
+                </div>
+
+                <div id="history-page" class="page">
+                    <h2>Historial</h2>
+                    <p>Historial completo de cambios y actividades...</p>
+                </div>
+
+                <div id="users-page" class="page">
+                    <h2>Gestión de Usuarios</h2>
+                    <p>Administración de usuarios del sistema...</p>
+                </div>
+
+                <div id="settings-page" class="page">
+                    <h2>Configuración del Sistema</h2>
+                    <p>Configuración general del sistema...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="gps-provider-script.js"></script>
+</body>
+</html>
