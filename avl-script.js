@@ -23,40 +23,58 @@ class AVLSystem {
 
     bindEvents() {
         // Login form
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleLogin();
-        });
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleLogin();
+            });
+        }
 
         // Sidebar toggle
-        document.getElementById('sidebar-toggle').addEventListener('click', () => {
-            this.toggleSidebar();
-        });
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                this.toggleSidebar();
+            });
+        }
 
-        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-            this.toggleSidebar();
-        });
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                this.toggleSidebar();
+            });
+        }
 
         // Navigation
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const page = e.currentTarget.dataset.page;
-                this.navigateToPage(page);
+        const navItems = document.querySelectorAll('.nav-item');
+        if (navItems.length > 0) {
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const page = e.currentTarget.dataset.page;
+                    this.navigateToPage(page);
+                });
             });
-        });
+        }
 
         // Add favorite form
-        document.getElementById('add-favorite-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.addFavorite();
-        });
+        const addFavoriteForm = document.getElementById('add-favorite-form');
+        if (addFavoriteForm) {
+            addFavoriteForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.addFavorite();
+            });
+        }
 
         // Close modal when clicking outside
-        document.getElementById('add-favorite-modal').addEventListener('click', (e) => {
-            if (e.target.id === 'add-favorite-modal') {
-                this.closeAddFavoriteModal();
-            }
-        });
+        const addFavoriteModal = document.getElementById('add-favorite-modal');
+        if (addFavoriteModal) {
+            addFavoriteModal.addEventListener('click', (e) => {
+                if (e.target.id === 'add-favorite-modal') {
+                    this.closeAddFavoriteModal();
+                }
+            });
+        }
 
         // Map type selector - only if no onclick is present
         document.querySelectorAll('.map-type-btn:not([onclick])').forEach(btn => {
@@ -465,6 +483,8 @@ class AVLSystem {
             this.map.remove();
         }
 
+        console.log('Initializing map...');
+
         // Initialize map centered on Buenos Aires
         this.map = L.map('map').setView([-34.6037, -58.3816], 11);
 
@@ -478,6 +498,15 @@ class AVLSystem {
         
         // Initialize mobile controls
         this.initializeMobileControls();
+        
+        // Force map to center and refresh after a short delay
+        setTimeout(() => {
+            if (this.map) {
+                this.map.setView([-34.6037, -58.3816], 11);
+                this.map.invalidateSize();
+                console.log('Map initialized and centered on Buenos Aires');
+            }
+        }, 500);
     }
 
     initializeMobileControls() {
@@ -1190,8 +1219,23 @@ document.addEventListener('DOMContentLoaded', () => {
     window.centerMap = function() {
         console.log('centerMap called');
         if (window.avlSystem && window.avlSystem.map) {
+            // Force map to center on Buenos Aires with all vehicles
             window.avlSystem.map.setView([-34.6037, -58.3816], 11);
-            console.log('Map centered');
+            window.avlSystem.map.invalidateSize();
+            console.log('Map centered on Buenos Aires');
+        } else {
+            console.error('Map not available for centering');
+            // Try to initialize map if not available
+            if (window.avlSystem) {
+                console.log('Attempting to initialize map...');
+                window.avlSystem.initializeMap();
+                setTimeout(() => {
+                    if (window.avlSystem.map) {
+                        window.avlSystem.map.setView([-34.6037, -58.3816], 11);
+                        console.log('Map centered after initialization');
+                    }
+                }, 1000);
+            }
         }
     };
     
@@ -1221,10 +1265,29 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('AVL System exists:', !!window.avlSystem);
         console.log('Map exists:', !!(window.avlSystem && window.avlSystem.map));
         console.log('Current map type:', window.avlSystem ? window.avlSystem.currentMapType : 'N/A');
+        if (window.avlSystem && window.avlSystem.map) {
+            console.log('Map center:', window.avlSystem.map.getCenter());
+            console.log('Map zoom:', window.avlSystem.map.getZoom());
+        }
         console.log('Global functions:');
         console.log('- changeMapType:', typeof window.changeMapType);
         console.log('- centerMap:', typeof window.centerMap);
         console.log('Username field:', !!document.getElementById('username'));
         console.log('========================');
+    };
+    
+    // Force center map function
+    window.forceCenterMap = function() {
+        console.log('Force centering map...');
+        if (window.avlSystem && window.avlSystem.map) {
+            window.avlSystem.map.setView([-34.6037, -58.3816], 11);
+            window.avlSystem.map.invalidateSize();
+            console.log('Map force centered');
+        } else {
+            console.log('Map not available, initializing...');
+            if (window.avlSystem) {
+                window.avlSystem.initializeMap();
+            }
+        }
     };
 });
