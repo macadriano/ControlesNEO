@@ -13,10 +13,12 @@ class AVLSystem {
     }
 
     init() {
+        console.log('AVL System initializing...');
         this.bindEvents();
         this.renderFavorites();
         this.loadSampleData();
         this.setInitialFocus();
+        console.log('AVL System initialized successfully');
     }
 
     bindEvents() {
@@ -102,10 +104,20 @@ class AVLSystem {
             if (usernameField) {
                 usernameField.focus();
                 console.log('Focus set on username field');
+                
+                // Add Enter key navigation
+                usernameField.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        const passwordField = document.getElementById('password');
+                        if (passwordField) {
+                            passwordField.focus();
+                        }
+                    }
+                });
             } else {
                 console.log('Username field not found');
             }
-        }, 200);
+        }, 500);
     }
 
     handleLogin() {
@@ -922,19 +934,7 @@ function addFavorite() {
     window.avlSystem.addFavorite();
 }
 
-// Global functions for map controls
-function changeMapType(type) {
-    if (window.avlSystem) {
-        window.avlSystem.changeMapType(type);
-    }
-}
-
-function centerMap() {
-    if (window.avlSystem && window.avlSystem.map) {
-        // Center on Buenos Aires with appropriate zoom
-        window.avlSystem.map.setView([-34.6037, -58.3816], 11);
-    }
-}
+// Global functions for map controls - moved to end of file
 
 function searchVehicle() {
     if (window.avlSystem) {
@@ -1164,3 +1164,35 @@ function removeFavorite(favoriteId) {
         }
     }
 }
+
+// Global functions for map controls
+function changeMapType(type) {
+    console.log('changeMapType called with:', type);
+    if (window.avlSystem) {
+        window.avlSystem.changeMapType(type);
+    } else {
+        console.error('AVL System not initialized');
+    }
+}
+
+function centerMap() {
+    console.log('centerMap called');
+    if (window.avlSystem && window.avlSystem.map) {
+        window.avlSystem.map.setView([-34.6037, -58.3816], 11);
+        console.log('Map centered');
+    } else {
+        console.error('Map not initialized');
+    }
+}
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing AVL System...');
+    window.avlSystem = new AVLSystem();
+    window.avlSystem.init();
+    
+    // Make functions globally available
+    window.changeMapType = changeMapType;
+    window.centerMap = centerMap;
+    console.log('Global functions registered');
+});
