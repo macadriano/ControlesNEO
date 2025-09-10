@@ -640,6 +640,13 @@ body {
     color: var(--text-secondary);
 }
 
+.favorite-item .favorite-category {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+    opacity: 0.8;
+}
+
 .favorite-remove {
     position: absolute;
     top: 0.5rem;
@@ -947,22 +954,25 @@ body {
     
     /* Mobile-optimized tracking layout */
     .tracking-content {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
         gap: 0;
         height: calc(100vh - 120px);
     }
 
     .map-container {
         order: 1;
-        height: 60vh;
+        height: 50vh;
         min-height: 300px;
+        flex-shrink: 0;
     }
 
     .vehicle-list {
         order: 2;
-        max-height: 35vh;
+        max-height: 40vh;
         overflow-y: auto;
         border-top: 2px solid var(--border-color);
+        flex-shrink: 0;
     }
 
     .vehicle-list-header {
@@ -2328,6 +2338,23 @@ body {
 
 .vehicle-list.collapsed .vehicle-list-header {
     border-bottom: none;
+}
+
+/* Mobile-specific collapsed state */
+@media (max-width: 480px) {
+    .vehicle-list.collapsed {
+        max-height: 50px;
+    }
+    
+    .vehicle-list.collapsed .vehicle-list-header h3 {
+        font-size: 0.9rem;
+    }
+    
+    .vehicle-list.collapsed .vehicle-list-toggle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
 }
 
 /* Notification Styles */

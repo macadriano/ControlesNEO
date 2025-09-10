@@ -218,30 +218,52 @@ class AVLSystem {
 
     renderFavorites() {
         const container = document.getElementById('favorites-grid');
+        if (!container) return;
         
-        if (this.favorites.length === 0) {
+        // Get favorites from localStorage (new system)
+        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        
+        if (favorites.length === 0) {
             container.innerHTML = `
                 <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-secondary);">
                     <i class="fas fa-star" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.3;"></i>
                     <p>No tienes favoritos configurados</p>
                     <p style="font-size: 0.9rem; margin-top: 0.5rem;">Agrega elementos frecuentemente utilizados para acceso rápido</p>
+                    <button class="btn btn-primary" onclick="showAddFavoriteModal()" style="margin-top: 1rem;">
+                        <i class="fas fa-plus"></i> Agregar Favorito
+                    </button>
                 </div>
             `;
             return;
         }
 
-        container.innerHTML = this.favorites.map(favorite => `
-            <div class="favorite-item" onclick="avlSystem.openFavorite('${favorite.type}')">
-                <div class="favorite-icon" style="background: ${this.getFavoriteColor(favorite.type)}">
-                    <i class="${this.getFavoriteIcon(favorite.type)}"></i>
+        container.innerHTML = favorites.map(favorite => `
+            <div class="favorite-item" onclick="navigateToFavorite('${favorite.id}')">
+                <div class="favorite-icon" style="background: ${this.getFavoriteColor(favorite.category)}">
+                    <i class="${favorite.icon}"></i>
                 </div>
                 <div class="favorite-name">${favorite.name}</div>
-                <div class="favorite-description">${favorite.description || this.getFavoriteTypeText(favorite.type)}</div>
-                <button class="favorite-remove" onclick="event.stopPropagation(); avlSystem.removeFavorite(${favorite.id})">
+                <div class="favorite-description">${favorite.description || 'Acceso rápido'}</div>
+                <div class="favorite-category">${this.getCategoryDisplayName(favorite.category)}</div>
+                <button class="favorite-remove" onclick="event.stopPropagation(); removeFavorite('${favorite.id}')">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
         `).join('');
+    }
+
+    getCategoryDisplayName(category) {
+        const categoryNames = {
+            'reports': '📊 Reportes',
+            'tracking': '🗺️ Seguimiento',
+            'alerts': '🚨 Alertas',
+            'vehicles': '🚛 Vehículos',
+            'routes': '🛣️ Rutas',
+            'users': '👥 Usuarios',
+            'settings': '⚙️ Configuración',
+            'history': '📋 Historial'
+        };
+        return categoryNames[category] || '⭐ Favorito';
     }
 
     getFavoriteIcon(type) {
@@ -255,15 +277,18 @@ class AVLSystem {
         return icons[type] || 'fas fa-star';
     }
 
-    getFavoriteColor(type) {
+    getFavoriteColor(category) {
         const colors = {
-            vehicle: 'var(--primary-color)',
-            route: 'var(--success-color)',
-            zone: 'var(--warning-color)',
-            report: 'var(--info-color)',
-            dashboard: 'var(--secondary-color)'
+            'reports': 'var(--info-color)',
+            'tracking': 'var(--primary-color)',
+            'alerts': 'var(--warning-color)',
+            'vehicles': 'var(--success-color)',
+            'routes': 'var(--primary-color)',
+            'users': 'var(--secondary-color)',
+            'settings': 'var(--text-secondary)',
+            'history': 'var(--info-color)'
         };
-        return colors[type] || 'var(--secondary-color)';
+        return colors[category] || 'var(--secondary-color)';
     }
 
     getFavoriteTypeText(type) {
@@ -996,11 +1021,12 @@ function addFavorite() {
     
     if (name) {
         const favorite = { 
+            id: Date.now(), // Unique ID
             name, 
             description: description || 'Acceso rápido',
             category,
             icon,
-            url: `#${category}`,
+            url: getPageUrlFromCategory(category),
             timestamp: new Date().toISOString()
         };
         
@@ -1021,6 +1047,21 @@ function addFavorite() {
             window.avlSystem.showNotification('Por favor ingrese un nombre para el favorito', 'warning');
         }
     }
+}
+
+// Helper function to get page URL from category
+function getPageUrlFromCategory(category) {
+    const categoryMap = {
+        'reports': 'reports-page',
+        'tracking': 'tracking-page', 
+        'alerts': 'alerts-page',
+        'vehicles': 'vehicles-page',
+        'routes': 'routes-page',
+        'users': 'users-page',
+        'settings': 'settings-page',
+        'history': 'history-page'
+    };
+    return categoryMap[category] || 'dashboard-page';
 }
 
 // Demo data fill function for favorite suggestions
@@ -1052,5 +1093,34 @@ function fillDemoData(type) {
         document.getElementById('favoriteDescription').value = data.description;
         document.getElementById('favoriteCategory').value = data.category;
         document.getElementById('favoriteIcon').value = data.icon;
+    }
+}
+
+// Navigation function for favorites
+function navigateToFavorite(favoriteId) {
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const favorite = favorites.find(f => f.id == favoriteId);
+    
+    if (favorite && window.avlSystem) {
+        // Navigate to the page
+        window.avlSystem.showPage(favorite.url.replace('#', ''));
+        
+        // Show notification
+        window.avlSystem.showNotification(`Navegando a: ${favorite.name}`, 'info');
+    }
+}
+
+// Remove favorite function
+function removeFavorite(favoriteId) {
+    if (confirm('¿Estás seguro de que quieres eliminar este favorito?')) {
+        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        const updatedFavorites = favorites.filter(f => f.id != favoriteId);
+        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+        
+        // Refresh favorites display
+        if (window.avlSystem) {
+            window.avlSystem.renderFavorites();
+            window.avlSystem.showNotification('Favorito eliminado', 'info');
+        }
     }
 }
