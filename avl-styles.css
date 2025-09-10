@@ -918,6 +918,25 @@ body {
         align-items: flex-start;
         gap: 1rem;
     }
+    
+    /* Force mobile layout for tablets and phones */
+    .tracking-content {
+        display: block !important;
+        grid-template-columns: none !important;
+        height: auto !important;
+    }
+    
+    .map-container {
+        width: 100% !important;
+        height: 50vh !important;
+        margin-bottom: 1rem;
+    }
+    
+    .vehicle-list {
+        width: 100% !important;
+        max-height: 40vh;
+        margin-top: 0;
+    }
 }
 
 @media (max-width: 480px) {
@@ -952,27 +971,28 @@ body {
         padding: 1rem;
     }
     
-    /* Mobile-optimized tracking layout */
+    /* Mobile-optimized tracking layout - Force vertical layout */
     .tracking-content {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-        height: calc(100vh - 120px);
+        display: block !important;
+        grid-template-columns: none !important;
+        height: auto !important;
     }
 
     .map-container {
-        order: 1;
-        height: 50vh;
+        width: 100% !important;
+        height: 50vh !important;
         min-height: 300px;
-        flex-shrink: 0;
+        margin-bottom: 1rem;
+        order: 1;
     }
 
     .vehicle-list {
-        order: 2;
+        width: 100% !important;
         max-height: 40vh;
         overflow-y: auto;
         border-top: 2px solid var(--border-color);
-        flex-shrink: 0;
+        order: 2;
+        position: relative;
     }
 
     .vehicle-list-header {
@@ -2354,6 +2374,25 @@ body {
         width: 28px;
         height: 28px;
         font-size: 0.8rem;
+    }
+    
+    /* Force mobile layout for very small screens */
+    .tracking-content {
+        display: block !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: none !important;
+    }
+    
+    .map-container {
+        width: 100% !important;
+        height: 45vh !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    .vehicle-list {
+        width: 100% !important;
+        max-height: 50vh;
+        margin-top: 0.5rem;
     }
 }
 
