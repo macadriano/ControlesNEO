@@ -287,18 +287,307 @@
 
                 <!-- Other Pages (Placeholder) -->
                 <div id="vehicles-page" class="page">
-                    <h2>Gestión de Vehículos</h2>
-                    <p>Contenido de la página de vehículos...</p>
+                    <div class="page-header">
+                        <h2><i class="fas fa-car"></i> Gestión de Vehículos</h2>
+                        <div class="page-actions">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-plus"></i> Agregar Vehículo
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-download"></i> Exportar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>45</h3>
+                                <p>Total Vehículos</p>
+                                <span class="stat-change positive">+3 este mes</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>42</h3>
+                                <p>Activos</p>
+                                <span class="stat-change positive">93% operativo</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>3</h3>
+                                <p>Con Problemas</p>
+                                <span class="stat-change negative">Requieren atención</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-wrench"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>2</h3>
+                                <p>En Mantenimiento</p>
+                                <span class="stat-change info">Programado</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="routes-page" class="page">
-                    <h2>Gestión de Rutas</h2>
-                    <p>Contenido de la página de rutas...</p>
+                    <div class="page-header">
+                        <h2><i class="fas fa-route"></i> Gestión de Rutas</h2>
+                        <div class="page-actions">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-plus"></i> Nueva Ruta
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-map"></i> Ver Mapa
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Routes Grid -->
+                    <div class="routes-grid">
+                        <div class="route-card">
+                            <div class="route-header">
+                                <div class="route-icon">
+                                    <i class="fas fa-route"></i>
+                                </div>
+                                <div class="route-info">
+                                    <h3>Ruta Norte</h3>
+                                    <p>Zona Norte - Centro</p>
+                                </div>
+                                <div class="route-status">
+                                    <span class="status-badge active">Activa</span>
+                                </div>
+                            </div>
+                            <div class="route-details">
+                                <div class="route-stat">
+                                    <i class="fas fa-clock"></i>
+                                    <span>45 min</span>
+                                </div>
+                                <div class="route-stat">
+                                    <i class="fas fa-car"></i>
+                                    <span>8 vehículos</span>
+                                </div>
+                                <div class="route-stat">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>12 paradas</span>
+                                </div>
+                            </div>
+                            <div class="route-actions">
+                                <button class="btn btn-sm btn-outline">Editar</button>
+                                <button class="btn btn-sm btn-primary">Ver Detalles</button>
+                            </div>
+                        </div>
+
+                        <div class="route-card">
+                            <div class="route-header">
+                                <div class="route-icon">
+                                    <i class="fas fa-route"></i>
+                                </div>
+                                <div class="route-info">
+                                    <h3>Ruta Sur</h3>
+                                    <p>Zona Sur - Puerto</p>
+                                </div>
+                                <div class="route-status">
+                                    <span class="status-badge active">Activa</span>
+                                </div>
+                            </div>
+                            <div class="route-details">
+                                <div class="route-stat">
+                                    <i class="fas fa-clock"></i>
+                                    <span>38 min</span>
+                                </div>
+                                <div class="route-stat">
+                                    <i class="fas fa-car"></i>
+                                    <span>6 vehículos</span>
+                                </div>
+                                <div class="route-stat">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>9 paradas</span>
+                                </div>
+                            </div>
+                            <div class="route-actions">
+                                <button class="btn btn-sm btn-outline">Editar</button>
+                                <button class="btn btn-sm btn-primary">Ver Detalles</button>
+                            </div>
+                        </div>
+
+                        <div class="route-card">
+                            <div class="route-header">
+                                <div class="route-icon">
+                                    <i class="fas fa-route"></i>
+                                </div>
+                                <div class="route-info">
+                                    <h3>Ruta Este</h3>
+                                    <p>Zona Este - Aeropuerto</p>
+                                </div>
+                                <div class="route-status">
+                                    <span class="status-badge warning">Parcial</span>
+                                </div>
+                            </div>
+                            <div class="route-details">
+                                <div class="route-stat">
+                                    <i class="fas fa-clock"></i>
+                                    <span>52 min</span>
+                                </div>
+                                <div class="route-stat">
+                                    <i class="fas fa-car"></i>
+                                    <span>4 vehículos</span>
+                                </div>
+                                <div class="route-stat">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>15 paradas</span>
+                                </div>
+                            </div>
+                            <div class="route-actions">
+                                <button class="btn btn-sm btn-outline">Editar</button>
+                                <button class="btn btn-sm btn-primary">Ver Detalles</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="alerts-page" class="page">
-                    <h2>Centro de Alertas</h2>
-                    <p>Contenido de la página de alertas...</p>
+                    <div class="page-header">
+                        <h2><i class="fas fa-exclamation-triangle"></i> Centro de Alertas</h2>
+                        <div class="page-actions">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-filter"></i> Filtrar
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-check-double"></i> Marcar Todas
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Alert Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>12</h3>
+                                <p>Alertas Activas</p>
+                                <span class="stat-change negative">+3 hoy</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>8</h3>
+                                <p>Exceso Velocidad</p>
+                                <span class="stat-change negative">Crítico</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-battery-quarter"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>3</h3>
+                                <p>Batería Baja</p>
+                                <span class="stat-change warning">Atención</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>1</h3>
+                                <p>Fuera de Zona</p>
+                                <span class="stat-change negative">Urgente</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alerts List -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3>Alertas Recientes</h3>
+                            <div class="alert-filters">
+                                <select class="filter-select">
+                                    <option value="all">Todas las alertas</option>
+                                    <option value="speed">Exceso velocidad</option>
+                                    <option value="battery">Batería baja</option>
+                                    <option value="zone">Fuera de zona</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="alerts-list">
+                            <div class="alert-item critical">
+                                <div class="alert-icon">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                </div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Exceso de Velocidad</div>
+                                    <div class="alert-description">ABC-123 excedió 80 km/h en zona escolar</div>
+                                    <div class="alert-meta">Carlos Mendoza • Hace 5 minutos</div>
+                                </div>
+                                <div class="alert-actions">
+                                    <button class="btn btn-sm btn-danger">Urgente</button>
+                                </div>
+                            </div>
+
+                            <div class="alert-item warning">
+                                <div class="alert-icon">
+                                    <i class="fas fa-battery-quarter"></i>
+                                </div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Batería Baja</div>
+                                    <div class="alert-description">DEF-456 con 15% de batería restante</div>
+                                    <div class="alert-meta">Roberto Silva • Hace 15 minutos</div>
+                                </div>
+                                <div class="alert-actions">
+                                    <button class="btn btn-sm btn-warning">Atención</button>
+                                </div>
+                            </div>
+
+                            <div class="alert-item info">
+                                <div class="alert-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Fuera de Zona</div>
+                                    <div class="alert-description">XYZ-789 salió de la zona autorizada</div>
+                                    <div class="alert-meta">María González • Hace 25 minutos</div>
+                                </div>
+                                <div class="alert-actions">
+                                    <button class="btn btn-sm btn-info">Verificar</button>
+                                </div>
+                            </div>
+
+                            <div class="alert-item success">
+                                <div class="alert-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Llegada a Destino</div>
+                                    <div class="alert-description">GHI-321 llegó a Terminal Norte</div>
+                                    <div class="alert-meta">Ana Rodríguez • Hace 30 minutos</div>
+                                </div>
+                                <div class="alert-actions">
+                                    <button class="btn btn-sm btn-success">Completado</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="tracking-page" class="page">
