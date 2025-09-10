@@ -611,7 +611,7 @@
                                     <option value="offline">Sin señal</option>
                                 </select>
                             </div>
-                            <button class="btn btn-primary" onclick="centerMap(); emergencyCenterMap();" id="center-btn">
+                            <button class="btn btn-primary" onclick="centerMap()" id="center-btn">
                                 <i class="fas fa-crosshairs"></i> Centrar
                             </button>
                         </div>
@@ -645,7 +645,7 @@
                                 <button class="mobile-control-btn" onclick="toggleVehicleList()" title="Lista de Vehículos">
                                     <i class="fas fa-list"></i>
                                 </button>
-                                <button class="mobile-control-btn" onclick="centerMap(); emergencyCenterMap();" title="Centrar Mapa" id="mobile-center-btn">
+                                <button class="mobile-control-btn" onclick="centerMap()" title="Centrar Mapa" id="mobile-center-btn">
                                     <i class="fas fa-crosshairs"></i>
                                 </button>
                                 <button class="mobile-control-btn" onclick="toggleMapType()" title="Cambiar Vista">
@@ -1198,45 +1198,5 @@
     <!-- Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="avl-script.js"></script>
-    <script>
-        // Emergency script to force map centering
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Emergency script loaded');
-            
-            // Force centering when tracking page is shown
-            setTimeout(function() {
-                if (window.emergencyCenterMap) {
-                    console.log('Running emergency centering from emergency script');
-                    window.emergencyCenterMap();
-                }
-            }, 3000);
-            
-            // Add click event to center button as backup
-            const centerBtn = document.getElementById('center-btn');
-            const mobileCenterBtn = document.getElementById('mobile-center-btn');
-            
-            if (centerBtn) {
-                centerBtn.addEventListener('click', function() {
-                    console.log('Center button clicked - emergency mode');
-                    setTimeout(function() {
-                        if (window.emergencyCenterMap) {
-                            window.emergencyCenterMap();
-                        }
-                    }, 100);
-                });
-            }
-            
-            if (mobileCenterBtn) {
-                mobileCenterBtn.addEventListener('click', function() {
-                    console.log('Mobile center button clicked - emergency mode');
-                    setTimeout(function() {
-                        if (window.emergencyCenterMap) {
-                            window.emergencyCenterMap();
-                        }
-                    }, 100);
-                });
-            }
-        });
-    </script>
 </body>
 </html>

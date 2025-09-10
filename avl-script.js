@@ -499,24 +499,20 @@ class AVLSystem {
         // Initialize mobile controls
         this.initializeMobileControls();
         
-        // Force map to center and refresh with multiple attempts
-        const centerMapMultipleTimes = () => {
-            if (this.map) {
+        // Center map on vehicle bounds after initialization
+        setTimeout(() => {
+            if (this.map && this.vehicles && this.vehicles.length > 0) {
+                // Calculate bounds from all vehicles
+                const vehicleBounds = this.vehicles.map(vehicle => [vehicle.lat, vehicle.lng]);
+                const bounds = L.latLngBounds(vehicleBounds);
+                this.map.fitBounds(bounds, { padding: [50, 50] });
+                console.log('Map initialized and centered on', this.vehicles.length, 'vehicles');
+            } else if (this.map) {
+                // Fallback to Buenos Aires if no vehicles
                 this.map.setView([-34.6037, -58.3816], 11);
-                this.map.invalidateSize();
-                this.map.fitBounds([
-                    [-34.7, -58.5], // Southwest corner
-                    [-34.5, -58.2]  // Northeast corner
-                ]);
-                console.log('Map centered attempt');
+                console.log('Map initialized and centered on Buenos Aires (no vehicles)');
             }
-        };
-        
-        // Multiple centering attempts
-        setTimeout(centerMapMultipleTimes, 100);
-        setTimeout(centerMapMultipleTimes, 500);
-        setTimeout(centerMapMultipleTimes, 1000);
-        setTimeout(centerMapMultipleTimes, 2000);
+        }, 1000);
     }
 
     initializeMobileControls() {
@@ -1227,127 +1223,52 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     window.centerMap = function() {
-        console.log('centerMap called - AGGRESSIVE MODE');
+        console.log('centerMap called');
         
-        // Multiple attempts to center the map
-        const centerMapAttempts = () => {
-            if (window.avlSystem && window.avlSystem.map) {
-                console.log('Attempting to center map...');
-                window.avlSystem.map.setView([-34.6037, -58.3816], 11);
-                window.avlSystem.map.invalidateSize();
-                window.avlSystem.map.fitBounds([
-                    [-34.7, -58.5], // Southwest corner
-                    [-34.5, -58.2]  // Northeast corner
-                ]);
-                console.log('Map centered on Buenos Aires with bounds');
+        if (window.avlSystem && window.avlSystem.map && window.avlSystem.vehicles) {
+            // Calculate bounds from all vehicles
+            const vehicleBounds = window.avlSystem.vehicles.map(vehicle => [vehicle.lat, vehicle.lng]);
+            
+            if (vehicleBounds.length > 0) {
+                // Create bounds and fit map to show all vehicles with padding
+                const bounds = L.latLngBounds(vehicleBounds);
+                window.avlSystem.map.fitBounds(bounds, { padding: [50, 50] });
+                console.log('Map centered on', vehicleBounds.length, 'vehicles');
             } else {
-                console.error('Map not available for centering');
-                // Try to initialize map if not available
-                if (window.avlSystem) {
-                    console.log('Attempting to initialize map...');
-                    window.avlSystem.initializeMap();
-                }
+                // Fallback to Buenos Aires if no vehicles
+                window.avlSystem.map.setView([-34.6037, -58.3816], 11);
+                console.log('No vehicles found, centered on Buenos Aires');
             }
-        };
-        
-        // Execute immediately
-        centerMapAttempts();
-        
-        // Execute after 100ms
-        setTimeout(centerMapAttempts, 100);
-        
-        // Execute after 500ms
-        setTimeout(centerMapAttempts, 500);
-        
-        // Execute after 1000ms
-        setTimeout(centerMapAttempts, 1000);
+        } else {
+            console.error('Map or vehicles not available');
+        }
     };
     
     console.log('Global functions registered');
     
-    // Additional initialization after a short delay
+    // Set focus on username field after a short delay
     setTimeout(() => {
-        // Set focus on username field
         const usernameField = document.getElementById('username');
         if (usernameField) {
             usernameField.focus();
-            console.log('Focus set on username field (delayed)');
+            console.log('Focus set on username field');
         }
-        
-        // Ensure map is initialized if we're on tracking page
-        if (window.location.hash === '#tracking' || document.getElementById('tracking-page').style.display !== 'none') {
-            if (window.avlSystem && !window.avlSystem.map) {
-                window.avlSystem.initializeMap();
-                console.log('Map initialized (delayed)');
-            }
-        }
-    }, 1000);
+    }, 500);
     
     // Debug function
     window.debugAVL = function() {
         console.log('=== AVL System Debug ===');
         console.log('AVL System exists:', !!window.avlSystem);
         console.log('Map exists:', !!(window.avlSystem && window.avlSystem.map));
+        console.log('Vehicles loaded:', window.avlSystem ? window.avlSystem.vehicles.length : 0);
         console.log('Current map type:', window.avlSystem ? window.avlSystem.currentMapType : 'N/A');
         if (window.avlSystem && window.avlSystem.map) {
             console.log('Map center:', window.avlSystem.map.getCenter());
             console.log('Map zoom:', window.avlSystem.map.getZoom());
         }
-        console.log('Global functions:');
-        console.log('- changeMapType:', typeof window.changeMapType);
-        console.log('- centerMap:', typeof window.centerMap);
-        console.log('Username field:', !!document.getElementById('username'));
         console.log('========================');
     };
     
-    // Force center map function
-    window.forceCenterMap = function() {
-        console.log('Force centering map...');
-        if (window.avlSystem && window.avlSystem.map) {
-            window.avlSystem.map.setView([-34.6037, -58.3816], 11);
-            window.avlSystem.map.invalidateSize();
-            console.log('Map force centered');
-        } else {
-            console.log('Map not available, initializing...');
-            if (window.avlSystem) {
-                window.avlSystem.initializeMap();
-            }
-        }
-    };
     
-    // Emergency centering function - runs automatically
-    window.emergencyCenterMap = function() {
-        console.log('EMERGENCY CENTERING - Running automatically...');
-        const emergencyCenter = () => {
-            if (window.avlSystem && window.avlSystem.map) {
-                console.log('Emergency centering map...');
-                window.avlSystem.map.setView([-34.6037, -58.3816], 11);
-                window.avlSystem.map.invalidateSize();
-                window.avlSystem.map.fitBounds([
-                    [-34.7, -58.5],
-                    [-34.5, -58.2]
-                ]);
-                console.log('Emergency center completed');
-            }
-        };
-        
-        // Run emergency center multiple times
-        emergencyCenter();
-        setTimeout(emergencyCenter, 500);
-        setTimeout(emergencyCenter, 1500);
-        setTimeout(emergencyCenter, 3000);
-    };
     
-    // Auto-run emergency centering when tracking page is shown
-    const originalShowPage = window.avlSystem ? window.avlSystem.showPage : null;
-    if (originalShowPage) {
-        window.avlSystem.showPage = function(page) {
-            originalShowPage.call(this, page);
-            if (page === 'tracking') {
-                setTimeout(() => {
-                    window.emergencyCenterMap();
-                }, 2000);
-            }
-        };
-    }
 });
