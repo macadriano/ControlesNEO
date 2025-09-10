@@ -99,25 +99,13 @@ class AVLSystem {
 
     setInitialFocus() {
         // Set focus on username field when page loads
-        setTimeout(() => {
-            const usernameField = document.getElementById('username');
-            if (usernameField) {
-                usernameField.focus();
-                console.log('Focus set on username field');
-                
-                // Add Enter key navigation
-                usernameField.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        const passwordField = document.getElementById('password');
-                        if (passwordField) {
-                            passwordField.focus();
-                        }
-                    }
-                });
-            } else {
-                console.log('Username field not found');
-            }
-        }, 500);
+        const usernameField = document.getElementById('username');
+        if (usernameField) {
+            usernameField.focus();
+            console.log('Focus set on username field');
+        } else {
+            console.log('Username field not found');
+        }
     }
 
     handleLogin() {
@@ -1191,8 +1179,52 @@ document.addEventListener('DOMContentLoaded', () => {
     window.avlSystem = new AVLSystem();
     window.avlSystem.init();
     
-    // Make functions globally available
-    window.changeMapType = changeMapType;
-    window.centerMap = centerMap;
+    // Make functions globally available immediately
+    window.changeMapType = function(type) {
+        console.log('changeMapType called with:', type);
+        if (window.avlSystem) {
+            window.avlSystem.changeMapType(type);
+        }
+    };
+    
+    window.centerMap = function() {
+        console.log('centerMap called');
+        if (window.avlSystem && window.avlSystem.map) {
+            window.avlSystem.map.setView([-34.6037, -58.3816], 11);
+            console.log('Map centered');
+        }
+    };
+    
     console.log('Global functions registered');
+    
+    // Additional initialization after a short delay
+    setTimeout(() => {
+        // Set focus on username field
+        const usernameField = document.getElementById('username');
+        if (usernameField) {
+            usernameField.focus();
+            console.log('Focus set on username field (delayed)');
+        }
+        
+        // Ensure map is initialized if we're on tracking page
+        if (window.location.hash === '#tracking' || document.getElementById('tracking-page').style.display !== 'none') {
+            if (window.avlSystem && !window.avlSystem.map) {
+                window.avlSystem.initializeMap();
+                console.log('Map initialized (delayed)');
+            }
+        }
+    }, 1000);
+    
+    // Debug function
+    window.debugAVL = function() {
+        console.log('=== AVL System Debug ===');
+        console.log('AVL System exists:', !!window.avlSystem);
+        console.log('Map exists:', !!(window.avlSystem && window.avlSystem.map));
+        console.log('Current map type:', window.avlSystem ? window.avlSystem.currentMapType : 'N/A');
+        console.log('Global functions:');
+        console.log('- changeMapType:', typeof window.changeMapType);
+        console.log('- centerMap:', typeof window.centerMap);
+        console.log('Username field:', !!document.getElementById('username'));
+        console.log('========================');
+    };
 });
