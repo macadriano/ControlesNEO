@@ -56,24 +56,13 @@ class AVLSystem {
             }
         });
 
-        // Map type selector
-        document.querySelectorAll('.map-type-btn').forEach(btn => {
+        // Map type selector - only if no onclick is present
+        document.querySelectorAll('.map-type-btn:not([onclick])').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
                 const type = e.currentTarget.dataset.type;
                 if (type) {
                     this.changeMapType(type);
                 }
-            });
-        });
-        
-        // Bind center button events
-        document.querySelectorAll('.center-btn, [onclick*="centerMap"]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                centerMap();
             });
         });
 
@@ -112,8 +101,11 @@ class AVLSystem {
             const usernameField = document.getElementById('username');
             if (usernameField) {
                 usernameField.focus();
+                console.log('Focus set on username field');
+            } else {
+                console.log('Username field not found');
             }
-        }, 100);
+        }, 200);
     }
 
     handleLogin() {
@@ -489,42 +481,14 @@ class AVLSystem {
     }
 
     initializeMobileControls() {
-        // Bind mobile control buttons
-        const mobileControls = document.querySelectorAll('.mobile-control-btn');
-        mobileControls.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const onclick = btn.getAttribute('onclick');
-                if (onclick) {
-                    // Execute the onclick function
-                    eval(onclick);
-                }
-            });
-        });
-        
         // Ensure map is properly initialized
         if (this.map) {
             this.map.invalidateSize();
         }
         
         // Debug: Log mobile controls initialization
+        const mobileControls = document.querySelectorAll('.mobile-control-btn');
         console.log('Mobile controls initialized:', mobileControls.length);
-        
-        // Add touch event support for mobile
-        mobileControls.forEach(btn => {
-            btn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                btn.style.transform = 'scale(0.95)';
-            });
-            
-            btn.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                btn.style.transform = '';
-                btn.click();
-            });
-        });
     }
 
     updateMapTiles() {
@@ -565,9 +529,6 @@ class AVLSystem {
 
         // Update map tiles
         this.updateMapTiles();
-        
-        // Show notification
-        this.showNotification(`Vista cambiada a: ${type === 'street' ? 'Calle' : 'Satelital'}`, 'info');
     }
 
     loadVehicleData() {
@@ -961,17 +922,17 @@ function addFavorite() {
     window.avlSystem.addFavorite();
 }
 
+// Global functions for map controls
+function changeMapType(type) {
+    if (window.avlSystem) {
+        window.avlSystem.changeMapType(type);
+    }
+}
+
 function centerMap() {
     if (window.avlSystem && window.avlSystem.map) {
         // Center on Buenos Aires with appropriate zoom
         window.avlSystem.map.setView([-34.6037, -58.3816], 11);
-        
-        // Show notification
-        if (window.avlSystem.showNotification) {
-            window.avlSystem.showNotification('Mapa centrado en Buenos Aires', 'info');
-        }
-    } else {
-        console.error('Map not initialized');
     }
 }
 
