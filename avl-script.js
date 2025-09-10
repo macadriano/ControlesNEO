@@ -59,8 +59,21 @@ class AVLSystem {
         // Map type selector
         document.querySelectorAll('.map-type-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 const type = e.currentTarget.dataset.type;
-                this.changeMapType(type);
+                if (type) {
+                    this.changeMapType(type);
+                }
+            });
+        });
+        
+        // Bind center button events
+        document.querySelectorAll('.center-btn, [onclick*="centerMap"]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                centerMap();
             });
         });
 
@@ -470,6 +483,48 @@ class AVLSystem {
         this.loadVehicleData();
         this.addVehicleMarkers();
         this.renderVehicleList();
+        
+        // Initialize mobile controls
+        this.initializeMobileControls();
+    }
+
+    initializeMobileControls() {
+        // Bind mobile control buttons
+        const mobileControls = document.querySelectorAll('.mobile-control-btn');
+        mobileControls.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const onclick = btn.getAttribute('onclick');
+                if (onclick) {
+                    // Execute the onclick function
+                    eval(onclick);
+                }
+            });
+        });
+        
+        // Ensure map is properly initialized
+        if (this.map) {
+            this.map.invalidateSize();
+        }
+        
+        // Debug: Log mobile controls initialization
+        console.log('Mobile controls initialized:', mobileControls.length);
+        
+        // Add touch event support for mobile
+        mobileControls.forEach(btn => {
+            btn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                btn.style.transform = 'scale(0.95)';
+            });
+            
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                btn.style.transform = '';
+                btn.click();
+            });
+        });
     }
 
     updateMapTiles() {
@@ -502,10 +557,17 @@ class AVLSystem {
         document.querySelectorAll('.map-type-btn').forEach(btn => {
             btn.classList.remove('active');
         });
-        document.querySelector(`[data-type="${type}"]`).classList.add('active');
+        
+        const targetBtn = document.querySelector(`[data-type="${type}"]`);
+        if (targetBtn) {
+            targetBtn.classList.add('active');
+        }
 
         // Update map tiles
         this.updateMapTiles();
+        
+        // Show notification
+        this.showNotification(`Vista cambiada a: ${type === 'street' ? 'Calle' : 'Satelital'}`, 'info');
     }
 
     loadVehicleData() {
@@ -901,7 +963,15 @@ function addFavorite() {
 
 function centerMap() {
     if (window.avlSystem && window.avlSystem.map) {
+        // Center on Buenos Aires with appropriate zoom
         window.avlSystem.map.setView([-34.6037, -58.3816], 11);
+        
+        // Show notification
+        if (window.avlSystem.showNotification) {
+            window.avlSystem.showNotification('Mapa centrado en Buenos Aires', 'info');
+        }
+    } else {
+        console.error('Map not initialized');
     }
 }
 
@@ -980,6 +1050,15 @@ function toggleMapType() {
         const mapTypeBtn = document.querySelector('.mobile-control-btn[onclick="toggleMapType()"]');
         if (mapTypeBtn) {
             mapTypeBtn.classList.toggle('active', newType === 'satellite');
+        }
+        
+        // Update main map type buttons
+        document.querySelectorAll('.map-type-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const targetBtn = document.querySelector(`[data-type="${newType}"]`);
+        if (targetBtn) {
+            targetBtn.classList.add('active');
         }
     }
 }
