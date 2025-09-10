@@ -189,11 +189,17 @@ class AVLSystem {
 
         this.currentPage = page;
 
-        // Initialize map when navigating to tracking page
+        // Initialize map when navigating to tracking page (only if not already initialized)
         if (page === 'tracking') {
-            setTimeout(() => {
-                this.initializeMap();
-            }, 100);
+            if (!this.map) {
+                console.log('Initializing map for tracking page...');
+                setTimeout(() => {
+                    this.initializeMap();
+                }, 100);
+            } else {
+                console.log('Map already exists, refreshing...');
+                this.map.invalidateSize();
+            }
         }
 
         // Close sidebar on mobile after navigation
@@ -479,8 +485,19 @@ class AVLSystem {
 
     // Map Functions
     initializeMap() {
+        // Check if map is already initialized
         if (this.map) {
-            this.map.remove();
+            console.log('Map already initialized, skipping...');
+            return;
+        }
+
+        // Check if the map container already has a map
+        const mapContainer = document.getElementById('map');
+        if (mapContainer && mapContainer._leaflet_id) {
+            console.log('Map container already has a map, removing it...');
+            // Remove existing map from container
+            mapContainer._leaflet_id = null;
+            mapContainer.innerHTML = '';
         }
 
         console.log('Initializing map...');
@@ -527,29 +544,47 @@ class AVLSystem {
     }
 
     updateMapTiles() {
+        console.log('updateMapTiles called, current type:', this.currentMapType);
         if (this.map) {
-            this.map.eachLayer((layer) => {
-                if (layer instanceof L.TileLayer) {
-                    this.map.removeLayer(layer);
+            try {
+                // Remove existing tile layers safely
+                this.map.eachLayer((layer) => {
+                    if (layer && layer instanceof L.TileLayer) {
+                        this.map.removeLayer(layer);
+                    }
+                });
+
+                let tileLayer;
+                if (this.currentMapType === 'satellite') {
+                    console.log('Adding satellite tiles');
+                    tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                    });
+                } else {
+                    console.log('Adding street tiles');
+                    tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    });
                 }
-            });
 
-            let tileLayer;
-            if (this.currentMapType === 'satellite') {
-                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-                });
-            } else {
-                tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                });
+                tileLayer.addTo(this.map);
+                console.log('Tiles updated successfully');
+            } catch (error) {
+                console.error('Error updating tiles:', error);
             }
-
-            tileLayer.addTo(this.map);
+        } else {
+            console.error('Map not available for tile update');
         }
     }
 
     changeMapType(type) {
+        console.log('AVLSystem.changeMapType called with:', type);
+        
+        if (!this.map) {
+            console.error('Map not initialized');
+            return;
+        }
+        
         this.currentMapType = type;
         
         // Update button states
@@ -560,6 +595,7 @@ class AVLSystem {
         const targetBtn = document.querySelector(`[data-type="${type}"]`);
         if (targetBtn) {
             targetBtn.classList.add('active');
+            console.log('Button state updated for:', type);
         }
 
         // Update map tiles
@@ -1188,15 +1224,6 @@ function removeFavorite(favoriteId) {
     }
 }
 
-// Global functions for map controls
-function changeMapType(type) {
-    console.log('changeMapType called with:', type);
-    if (window.avlSystem) {
-        window.avlSystem.changeMapType(type);
-    } else {
-        console.error('AVL System not initialized');
-    }
-}
 
 function centerMap() {
     console.log('centerMap called');
@@ -1218,29 +1245,60 @@ document.addEventListener('DOMContentLoaded', () => {
     window.changeMapType = function(type) {
         console.log('changeMapType called with:', type);
         if (window.avlSystem) {
-            window.avlSystem.changeMapType(type);
+            if (window.avlSystem.map) {
+                window.avlSystem.changeMapType(type);
+                console.log('Map type changed to:', type);
+            } else {
+                console.log('Map not ready, initializing...');
+                window.avlSystem.initializeMap();
+                // Try again after initialization
+                setTimeout(() => {
+                    if (window.avlSystem.map) {
+                        window.avlSystem.changeMapType(type);
+                        console.log('Map type changed to:', type, '(after init)');
+                    }
+                }, 1500);
+            }
+        } else {
+            console.error('AVL System not available');
         }
     };
     
     window.centerMap = function() {
         console.log('centerMap called');
         
-        if (window.avlSystem && window.avlSystem.map && window.avlSystem.vehicles) {
-            // Calculate bounds from all vehicles
-            const vehicleBounds = window.avlSystem.vehicles.map(vehicle => [vehicle.lat, vehicle.lng]);
-            
-            if (vehicleBounds.length > 0) {
-                // Create bounds and fit map to show all vehicles with padding
-                const bounds = L.latLngBounds(vehicleBounds);
-                window.avlSystem.map.fitBounds(bounds, { padding: [50, 50] });
-                console.log('Map centered on', vehicleBounds.length, 'vehicles');
+        if (window.avlSystem) {
+            if (window.avlSystem.map && window.avlSystem.vehicles) {
+                // Calculate bounds from all vehicles
+                const vehicleBounds = window.avlSystem.vehicles.map(vehicle => [vehicle.lat, vehicle.lng]);
+                
+                if (vehicleBounds.length > 0) {
+                    // Create bounds and fit map to show all vehicles with padding
+                    const bounds = L.latLngBounds(vehicleBounds);
+                    window.avlSystem.map.fitBounds(bounds, { padding: [50, 50] });
+                    console.log('Map centered on', vehicleBounds.length, 'vehicles');
+                } else {
+                    // Fallback to Buenos Aires if no vehicles
+                    window.avlSystem.map.setView([-34.6037, -58.3816], 11);
+                    console.log('No vehicles found, centered on Buenos Aires');
+                }
             } else {
-                // Fallback to Buenos Aires if no vehicles
-                window.avlSystem.map.setView([-34.6037, -58.3816], 11);
-                console.log('No vehicles found, centered on Buenos Aires');
+                console.log('Map not ready, initializing...');
+                window.avlSystem.initializeMap();
+                // Try again after initialization
+                setTimeout(() => {
+                    if (window.avlSystem.map && window.avlSystem.vehicles) {
+                        const vehicleBounds = window.avlSystem.vehicles.map(vehicle => [vehicle.lat, vehicle.lng]);
+                        if (vehicleBounds.length > 0) {
+                            const bounds = L.latLngBounds(vehicleBounds);
+                            window.avlSystem.map.fitBounds(bounds, { padding: [50, 50] });
+                            console.log('Map centered on', vehicleBounds.length, 'vehicles (after init)');
+                        }
+                    }
+                }, 1500);
             }
         } else {
-            console.error('Map or vehicles not available');
+            console.error('AVL System not available');
         }
     };
     
@@ -1262,11 +1320,36 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Map exists:', !!(window.avlSystem && window.avlSystem.map));
         console.log('Vehicles loaded:', window.avlSystem ? window.avlSystem.vehicles.length : 0);
         console.log('Current map type:', window.avlSystem ? window.avlSystem.currentMapType : 'N/A');
+        console.log('Current page:', window.avlSystem ? window.avlSystem.currentPage : 'N/A');
         if (window.avlSystem && window.avlSystem.map) {
             console.log('Map center:', window.avlSystem.map.getCenter());
             console.log('Map zoom:', window.avlSystem.map.getZoom());
         }
         console.log('========================');
+    };
+    
+    // Force initialize map function
+    window.forceInitMap = function() {
+        console.log('Force initializing map...');
+        if (window.avlSystem) {
+            // Clear existing map reference
+            if (window.avlSystem.map) {
+                console.log('Removing existing map reference...');
+                window.avlSystem.map = null;
+            }
+            
+            // Clear map container
+            const mapContainer = document.getElementById('map');
+            if (mapContainer) {
+                mapContainer.innerHTML = '';
+                mapContainer._leaflet_id = null;
+            }
+            
+            window.avlSystem.initializeMap();
+            console.log('Map initialization forced');
+        } else {
+            console.error('AVL System not available');
+        }
     };
     
     
