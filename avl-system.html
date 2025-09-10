@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVL System - Dashboard</title>
+    <link rel="stylesheet" href="avl-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-satellite-dish"></i>
+                    <h1>AVL System</h1>
+                </div>
+                <p>Sistema de Localización y Monitoreo Vehicular</p>
+            </div>
+            
+            <form class="login-form" id="login-form">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" placeholder="Ingrese su usuario" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="remember">
+                        <span class="checkmark"></span>
+                        Recordarme
+                    </label>
+                    <a href="#" class="forgot-password">¿Olvidó su contraseña?</a>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Iniciar Sesión
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <p>&copy; 2024 AVL System. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-app" class="main-app" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-satellite-dish"></i>
+                    <span class="logo-text">AVL System</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h3>Principal</h3>
+                    <ul>
+                        <li class="nav-item active" data-page="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </li>
+                        <li class="nav-item" data-page="vehicles">
+                            <i class="fas fa-car"></i>
+                            <span>Vehículos</span>
+                        </li>
+                        <li class="nav-item" data-page="routes">
+                            <i class="fas fa-route"></i>
+                            <span>Rutas</span>
+                        </li>
+                        <li class="nav-item" data-page="alerts">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Alertas</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Monitoreo</h3>
+                    <ul>
+                        <li class="nav-item" data-page="tracking">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <span>Seguimiento</span>
+                        </li>
+                        <li class="nav-item" data-page="reports">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Reportes</span>
+                        </li>
+                        <li class="nav-item" data-page="history">
+                            <i class="fas fa-history"></i>
+                            <span>Historial</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Configuración</h3>
+                    <ul>
+                        <li class="nav-item" data-page="users">
+                            <i class="fas fa-users"></i>
+                            <span>Usuarios</span>
+                        </li>
+                        <li class="nav-item" data-page="settings">
+                            <i class="fas fa-cog"></i>
+                            <span>Configuración</span>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 id="page-title">Dashboard</h2>
+                </div>
+                
+                <div class="top-bar-right">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="vehicle-search" placeholder="Buscar vehículo, conductor...">
+                                <button class="search-btn" onclick="searchVehicle()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                    
+                    <div class="notifications">
+                        <button class="notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                    </div>
+                    
+                    <div class="user-menu">
+                        <div class="user-avatar">
+                            <img src="https://via.placeholder.com/40" alt="Usuario">
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">Juan Pérez</span>
+                            <span class="user-role">Administrador</span>
+                        </div>
+                        <button class="user-dropdown">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Dashboard Page -->
+                <div id="dashboard-page" class="page active">
+                    <!-- Quick Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>45</h3>
+                                <p>Vehículos Activos</p>
+                                <span class="stat-change positive">+2 esta semana</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>128</h3>
+                                <p>Rutas Monitoreadas</p>
+                                <span class="stat-change positive">+5 esta semana</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>12</h3>
+                                <p>Alertas Activas</p>
+                                <span class="stat-change negative">+3 hoy</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>98.5%</h3>
+                                <p>Uptime Sistema</p>
+                                <span class="stat-change positive">+0.2% esta semana</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Favorites Section -->
+                    <div class="favorites-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-star"></i> Favoritos</h3>
+                            <button class="btn btn-outline" onclick="showAddFavoriteModal()">
+                                <i class="fas fa-plus"></i> Agregar
+                            </button>
+                        </div>
+                        
+                        <div class="favorites-grid" id="favorites-grid">
+                            <!-- Favorites will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="recent-activity">
+                        <div class="section-header">
+                            <h3><i class="fas fa-history"></i> Actividad Reciente</h3>
+                            <a href="#" class="view-all">Ver todo</a>
+                        </div>
+                        
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-exclamation-circle text-warning"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Exceso de velocidad detectado</h4>
+                                    <p>Vehículo ABC-123 en Ruta 5 - 15:30</p>
+                                </div>
+                                <div class="activity-time">Hace 5 min</div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-map-marker-alt text-success"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Vehículo llegó a destino</h4>
+                                    <p>XYZ-789 llegó a Terminal Norte - 15:25</p>
+                                </div>
+                                <div class="activity-time">Hace 10 min</div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-battery-quarter text-danger"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Batería baja</h4>
+                                    <p>Dispositivo DEF-456 con 15% de batería - 15:20</p>
+                                </div>
+                                <div class="activity-time">Hace 15 min</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other Pages (Placeholder) -->
+                <div id="vehicles-page" class="page">
+                    <h2>Gestión de Vehículos</h2>
+                    <p>Contenido de la página de vehículos...</p>
+                </div>
+
+                <div id="routes-page" class="page">
+                    <h2>Gestión de Rutas</h2>
+                    <p>Contenido de la página de rutas...</p>
+                </div>
+
+                <div id="alerts-page" class="page">
+                    <h2>Centro de Alertas</h2>
+                    <p>Contenido de la página de alertas...</p>
+                </div>
+
+                <div id="tracking-page" class="page">
+                    <div class="tracking-header">
+                        <h2><i class="fas fa-map-marked-alt"></i> Seguimiento en Tiempo Real</h2>
+                        <div class="map-controls">
+                            <div class="map-type-selector">
+                                <button class="map-type-btn active" data-type="street">
+                                    <i class="fas fa-map"></i> Calle
+                                </button>
+                                <button class="map-type-btn" data-type="satellite">
+                                    <i class="fas fa-satellite"></i> Satelital
+                                </button>
+                            </div>
+                            <div class="vehicle-filters">
+                                <select id="status-filter">
+                                    <option value="all">Todos los estados</option>
+                                    <option value="ontime">En tiempo</option>
+                                    <option value="delayed">Demorado</option>
+                                    <option value="stopped">Detenido</option>
+                                    <option value="offline">Sin señal</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="centerMap()">
+                                <i class="fas fa-crosshairs"></i> Centrar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="tracking-content">
+                        <div class="map-container">
+                            <div id="map" class="map"></div>
+                            <div class="map-legend">
+                                <h4>Leyenda</h4>
+                                <div class="legend-item">
+                                    <div class="legend-icon ontime"></div>
+                                    <span>En tiempo</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-icon delayed"></div>
+                                    <span>Demorado</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-icon stopped"></div>
+                                    <span>Detenido</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-icon offline"></div>
+                                    <span>Sin señal</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="vehicle-list">
+                            <h3><i class="fas fa-list"></i> Lista de Vehículos</h3>
+                            <div class="vehicle-list-content" id="vehicle-list-content">
+                                <!-- Vehicle list will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="reports-page" class="page">
+                    <h2>Reportes y Análisis</h2>
+                    <p>Contenido de la página de reportes...</p>
+                </div>
+
+                <div id="history-page" class="page">
+                    <h2>Historial de Eventos</h2>
+                    <p>Contenido de la página de historial...</p>
+                </div>
+
+                <div id="users-page" class="page">
+                    <h2>Gestión de Usuarios</h2>
+                    <p>Contenido de la página de usuarios...</p>
+                </div>
+
+                <div id="settings-page" class="page">
+                    <h2>Configuración del Sistema</h2>
+                    <p>Contenido de la página de configuración...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Favorite Modal -->
+    <div id="add-favorite-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Agregar a Favoritos</h3>
+                <button class="modal-close" onclick="closeAddFavoriteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-favorite-form">
+                    <div class="form-group">
+                        <label for="favorite-name">Nombre del Favorito</label>
+                        <input type="text" id="favorite-name" name="name" placeholder="Ej: Ruta Principal" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="favorite-type">Tipo</label>
+                        <select id="favorite-type" name="type" required>
+                            <option value="">Seleccionar tipo</option>
+                            <option value="vehicle">Vehículo</option>
+                            <option value="route">Ruta</option>
+                            <option value="zone">Zona</option>
+                            <option value="report">Reporte</option>
+                            <option value="dashboard">Dashboard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="favorite-description">Descripción</label>
+                        <textarea id="favorite-description" name="description" placeholder="Descripción opcional"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeAddFavoriteModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="addFavorite()">Agregar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="avl-script.js"></script>
+</body>
+</html>
