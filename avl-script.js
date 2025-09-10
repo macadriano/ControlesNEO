@@ -928,3 +928,129 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// Mobile-specific functions for map controls
+function toggleVehicleList() {
+    const vehicleList = document.getElementById('vehicle-list');
+    const toggleBtn = document.querySelector('.vehicle-list-toggle i');
+    
+    if (vehicleList && toggleBtn) {
+        if (vehicleList.classList.contains('collapsed')) {
+            vehicleList.classList.remove('collapsed');
+            toggleBtn.className = 'fas fa-chevron-up';
+        } else {
+            vehicleList.classList.add('collapsed');
+            toggleBtn.className = 'fas fa-chevron-down';
+        }
+    }
+}
+
+function toggleMapType() {
+    if (window.avlSystem) {
+        const currentType = window.avlSystem.currentMapType;
+        const newType = currentType === 'street' ? 'satellite' : 'street';
+        window.avlSystem.changeMapType(newType);
+        
+        // Update mobile control button
+        const mapTypeBtn = document.querySelector('.mobile-control-btn[onclick="toggleMapType()"]');
+        if (mapTypeBtn) {
+            mapTypeBtn.classList.toggle('active', newType === 'satellite');
+        }
+    }
+}
+
+// Enhanced favorite functions with demo data
+function showAddFavoriteModal() {
+    const modal = document.getElementById('addFavoriteModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        
+        // Pre-fill with demo data for better UX
+        const demoData = [
+            { name: 'Reporte de Velocidad Semanal', description: 'Análisis de excesos de velocidad', category: 'reports', icon: 'fas fa-tachometer-alt' },
+            { name: 'Alertas Críticas', description: 'Monitoreo de alertas importantes', category: 'alerts', icon: 'fas fa-exclamation-triangle' },
+            { name: 'Vehículos Activos', description: 'Lista de vehículos en operación', category: 'vehicles', icon: 'fas fa-truck' },
+            { name: 'Rutas Principales', description: 'Gestión de rutas frecuentes', category: 'routes', icon: 'fas fa-route' }
+        ];
+        
+        const randomDemo = demoData[Math.floor(Math.random() * demoData.length)];
+        document.getElementById('favoriteName').placeholder = randomDemo.name;
+        document.getElementById('favoriteDescription').placeholder = randomDemo.description;
+        document.getElementById('favoriteCategory').value = randomDemo.category;
+        document.getElementById('favoriteIcon').value = randomDemo.icon;
+    }
+}
+
+function closeAddFavoriteModal() {
+    const modal = document.getElementById('addFavoriteModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function addFavorite() {
+    const name = document.getElementById('favoriteName').value;
+    const description = document.getElementById('favoriteDescription').value;
+    const category = document.getElementById('favoriteCategory').value;
+    const icon = document.getElementById('favoriteIcon').value;
+    
+    if (name) {
+        const favorite = { 
+            name, 
+            description: description || 'Acceso rápido',
+            category,
+            icon,
+            url: `#${category}`,
+            timestamp: new Date().toISOString()
+        };
+        
+        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        favorites.push(favorite);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        
+        // Refresh favorites display
+        if (window.avlSystem) {
+            window.avlSystem.renderFavorites();
+            window.avlSystem.showNotification('Favorito agregado exitosamente', 'success');
+        }
+        
+        closeAddFavoriteModal();
+        document.getElementById('addFavoriteForm').reset();
+    } else {
+        if (window.avlSystem) {
+            window.avlSystem.showNotification('Por favor ingrese un nombre para el favorito', 'warning');
+        }
+    }
+}
+
+// Demo data fill function for favorite suggestions
+function fillDemoData(type) {
+    const demoData = {
+        speed: {
+            name: 'Reporte de Velocidad Semanal',
+            description: 'Análisis detallado de excesos de velocidad por vehículo',
+            category: 'reports',
+            icon: 'fas fa-tachometer-alt'
+        },
+        alerts: {
+            name: 'Centro de Alertas Críticas',
+            description: 'Monitoreo en tiempo real de alertas importantes',
+            category: 'alerts',
+            icon: 'fas fa-exclamation-triangle'
+        },
+        routes: {
+            name: 'Gestión de Rutas Principales',
+            description: 'Administración de rutas más utilizadas',
+            category: 'routes',
+            icon: 'fas fa-route'
+        }
+    };
+    
+    const data = demoData[type];
+    if (data) {
+        document.getElementById('favoriteName').value = data.name;
+        document.getElementById('favoriteDescription').value = data.description;
+        document.getElementById('favoriteCategory').value = data.category;
+        document.getElementById('favoriteIcon').value = data.icon;
+    }
+}

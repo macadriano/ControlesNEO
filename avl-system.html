@@ -639,10 +639,28 @@
                                     <span>Sin señal</span>
                                 </div>
                             </div>
+                            
+                            <!-- Mobile Map Controls -->
+                            <div class="mobile-map-controls">
+                                <button class="mobile-control-btn" onclick="toggleVehicleList()" title="Lista de Vehículos">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                                <button class="mobile-control-btn" onclick="centerMap()" title="Centrar Mapa">
+                                    <i class="fas fa-crosshairs"></i>
+                                </button>
+                                <button class="mobile-control-btn" onclick="toggleMapType()" title="Cambiar Vista">
+                                    <i class="fas fa-layer-group"></i>
+                                </button>
+                            </div>
                         </div>
                         
-                        <div class="vehicle-list">
-                            <h3><i class="fas fa-list"></i> Lista de Vehículos</h3>
+                        <div class="vehicle-list" id="vehicle-list">
+                            <div class="vehicle-list-header">
+                                <h3><i class="fas fa-list"></i> Lista de Vehículos</h3>
+                                <button class="vehicle-list-toggle" onclick="toggleVehicleList()">
+                                    <i class="fas fa-chevron-up"></i>
+                                </button>
+                            </div>
                             <div class="vehicle-list-content" id="vehicle-list-content">
                                 <!-- Vehicle list will be populated here -->
                             </div>
@@ -1102,40 +1120,77 @@
     </div>
 
     <!-- Add Favorite Modal -->
-    <div id="add-favorite-modal" class="modal">
+    <div id="addFavoriteModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Agregar a Favoritos</h3>
+                <h3><i class="fas fa-star"></i> Agregar a Favoritos</h3>
                 <button class="modal-close" onclick="closeAddFavoriteModal()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="add-favorite-form">
+                <form id="addFavoriteForm">
                     <div class="form-group">
-                        <label for="favorite-name">Nombre del Favorito</label>
-                        <input type="text" id="favorite-name" name="name" placeholder="Ej: Ruta Principal" required>
+                        <label for="favoriteName">Nombre del Favorito</label>
+                        <input type="text" id="favoriteName" name="name" placeholder="Ej: Reporte de Velocidad Semanal" required>
                     </div>
                     <div class="form-group">
-                        <label for="favorite-type">Tipo</label>
-                        <select id="favorite-type" name="type" required>
-                            <option value="">Seleccionar tipo</option>
-                            <option value="vehicle">Vehículo</option>
-                            <option value="route">Ruta</option>
-                            <option value="zone">Zona</option>
-                            <option value="report">Reporte</option>
-                            <option value="dashboard">Dashboard</option>
+                        <label for="favoriteDescription">Descripción</label>
+                        <input type="text" id="favoriteDescription" name="description" placeholder="Ej: Análisis de excesos de velocidad">
+                    </div>
+                    <div class="form-group">
+                        <label for="favoriteCategory">Categoría</label>
+                        <select id="favoriteCategory" name="category" required>
+                            <option value="reports">📊 Reportes</option>
+                            <option value="tracking">🗺️ Seguimiento</option>
+                            <option value="alerts">🚨 Alertas</option>
+                            <option value="vehicles">🚛 Vehículos</option>
+                            <option value="routes">🛣️ Rutas</option>
+                            <option value="users">👥 Usuarios</option>
+                            <option value="settings">⚙️ Configuración</option>
+                            <option value="history">📋 Historial</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="favorite-description">Descripción</label>
-                        <textarea id="favorite-description" name="description" placeholder="Descripción opcional"></textarea>
+                        <label for="favoriteIcon">Icono</label>
+                        <select id="favoriteIcon" name="icon">
+                            <option value="fas fa-chart-line">📈 Gráficos</option>
+                            <option value="fas fa-map-marker-alt">📍 Mapa</option>
+                            <option value="fas fa-bell">🔔 Alertas</option>
+                            <option value="fas fa-truck">🚛 Vehículos</option>
+                            <option value="fas fa-route">🛣️ Rutas</option>
+                            <option value="fas fa-users">👥 Usuarios</option>
+                            <option value="fas fa-cog">⚙️ Configuración</option>
+                            <option value="fas fa-history">📋 Historial</option>
+                            <option value="fas fa-download">💾 Exportar</option>
+                            <option value="fas fa-tachometer-alt">⏱️ Velocidad</option>
+                            <option value="fas fa-exclamation-triangle">⚠️ Alertas</option>
+                            <option value="fas fa-shield-alt">🛡️ Seguridad</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="demo-suggestions">
+                            <label>💡 Sugerencias populares:</label>
+                            <div class="suggestion-chips">
+                                <button type="button" class="suggestion-chip" onclick="fillDemoData('speed')">
+                                    <i class="fas fa-tachometer-alt"></i> Reporte de Velocidad
+                                </button>
+                                <button type="button" class="suggestion-chip" onclick="fillDemoData('alerts')">
+                                    <i class="fas fa-exclamation-triangle"></i> Alertas Críticas
+                                </button>
+                                <button type="button" class="suggestion-chip" onclick="fillDemoData('routes')">
+                                    <i class="fas fa-route"></i> Rutas Principales
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeAddFavoriteModal()">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="addFavorite()">Agregar</button>
+                <button type="button" class="btn btn-primary" onclick="addFavorite()">
+                    <i class="fas fa-plus"></i> Agregar Favorito
+                </button>
             </div>
         </div>
     </div>
